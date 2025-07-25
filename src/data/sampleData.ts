@@ -374,17 +374,180 @@ export function initializeSampleData() {
     }
   ];
 
+  // Nouvelles données d'exemple pour les fonctionnalités étendues
+  
+  // Ajouter des discussions de forum d'exemple
+  const sampleForumDiscussions = [
+    {
+      title: "Interprétation de l'article 1240 du Code civil",
+      content: "Je cherche des clarifications sur l'application de l'article 1240 du Code civil dans le contexte des dommages causés par négligence. Quelles sont les dernières jurisprudences applicables ?",
+      author: "Maître Benali",
+      category: "Droit Civil",
+      status: 'active' as const,
+      tags: ["responsabilité", "dommages", "jurisprudence", "code civil"],
+      isPinned: true,
+      isLocked: false
+    },
+    {
+      title: "Nouvelle jurisprudence en droit commercial",
+      content: "Discussion sur les récentes décisions de la Cour suprême concernant les contrats commerciaux et leur impact sur la pratique quotidienne.",
+      author: "Dr. Amara",
+      category: "Droit Commercial",
+      status: 'active' as const,
+      tags: ["commercial", "contrat", "jurisprudence", "cour suprême"],
+      isPinned: false,
+      isLocked: false
+    },
+    {
+      title: "Procédure d'urgence en référé - Cas pratiques",
+      content: "Partage d'expériences sur les procédures d'urgence en référé. Quels sont les critères déterminants pour obtenir une ordonnance favorable ?",
+      author: "Mme Kaci",
+      category: "Procédure",
+      status: 'resolved' as const,
+      tags: ["référé", "urgence", "procédure", "ordonnance"],
+      isPinned: false,
+      isLocked: false
+    }
+  ];
+
+  // Ajouter des ressources partagées d'exemple
+  const sampleSharedResources = [
+    {
+      title: "Modèles de Contrats Commerciaux 2024",
+      description: "Collection complète de modèles de contrats commerciaux mis à jour selon la nouvelle réglementation",
+      type: 'document' as const,
+      url: '/resources/contrats-commerciaux-2024.pdf',
+      sharedBy: "Cabinet Juridique Alger",
+      category: "Contrats",
+      tags: ["contrats", "commercial", "modèles", "2024"],
+      isPublic: true
+    },
+    {
+      title: "Guide Pratique du Droit du Travail",
+      description: "Guide complet sur les dernières modifications du droit du travail en Algérie",
+      type: 'document' as const,
+      url: '/resources/guide-droit-travail.pdf',
+      sharedBy: "Ministère du Travail",
+      category: "Droit du Travail",
+      tags: ["travail", "guide", "réglementation", "pratique"],
+      isPublic: true
+    },
+    {
+      title: "Formulaires Administratifs Numérisés",
+      description: "Collection de formulaires administratifs au format numérique pour faciliter les démarches",
+      type: 'file' as const,
+      url: '/resources/formulaires-admin.zip',
+      sharedBy: "Administration Publique",
+      category: "Formulaires",
+      tags: ["formulaires", "administratif", "numérique", "démarches"],
+      isPublic: true
+    }
+  ];
+
+  // Ajouter des tutoriels vidéo d'exemple
+  const sampleVideoTutorials = [
+    {
+      title: "Introduction au Droit Civil Algérien",
+      description: "Cours complet d'introduction aux principes fondamentaux du droit civil algérien",
+      url: "https://example.com/video/droit-civil-intro",
+      duration: "45:30",
+      category: "Formation Juridique",
+      instructor: "Professeur Mahmoud",
+      tags: ["droit civil", "introduction", "formation", "principes"],
+      transcript: "Bienvenue dans ce cours d'introduction au droit civil algérien. Nous allons explorer les principes fondamentaux..."
+    },
+    {
+      title: "Procédures Judiciaires : Guide Pratique",
+      description: "Guide pratique des procédures judiciaires avec exemples concrets et cas d'étude",
+      url: "https://example.com/video/procedures-judiciaires",
+      duration: "32:15",
+      category: "Procédures",
+      instructor: "Maître Saida",
+      tags: ["procédures", "judiciaire", "pratique", "exemples"],
+      transcript: "Dans cette vidéo, nous allons examiner les différentes étapes des procédures judiciaires..."
+    },
+    {
+      title: "Droit Commercial : Contrats et Obligations",
+      description: "Formation approfondie sur les contrats commerciaux et les obligations des parties",
+      url: "https://example.com/video/droit-commercial",
+      duration: "58:45",
+      category: "Droit Commercial",
+      instructor: "Dr. Karim",
+      tags: ["commercial", "contrats", "obligations", "formation"],
+      transcript: "Le droit commercial régit les relations entre commerçants et les actes de commerce..."
+    }
+  ];
+
+  // Ajouter des configurations d'exemple
+  const sampleConfigurations = [
+    {
+      key: 'theme',
+      value: 'light',
+      category: 'appearance' as const,
+      userId: 'user-1'
+    },
+    {
+      key: 'notifications',
+      value: true,
+      category: 'notifications' as const,
+      userId: 'user-1'
+    },
+    {
+      key: 'language',
+      value: 'fr',
+      category: 'appearance' as const,
+      userId: 'user-1'
+    },
+    {
+      key: 'offline-mode',
+      value: false,
+      category: 'performance' as const,
+      userId: 'user-1'
+    }
+  ];
+
+  // Ajouter des membres du forum d'exemple
+  const sampleForumMembers = [
+    {
+      name: "Maître Ahmed Benali",
+      email: "a.benali@avocat-dz.com",
+      role: 'moderator' as const
+    },
+    {
+      name: "Dr. Fatima Amara",
+      email: "f.amara@univ-alger.dz",
+      role: 'member' as const
+    },
+    {
+      name: "Professeur Karim Ziani",
+      email: "k.ziani@law-school.dz",
+      role: 'admin' as const
+    }
+  ];
+
   // Ajouter les données au store
   sampleLegalTexts.forEach(text => store.addLegalText(text));
   sampleProcedures.forEach(procedure => store.addProcedure(procedure));
   sampleNews.forEach(news => store.addNews(news));
   sampleTemplates.forEach(template => store.addTemplate(template));
+  
+  // Ajouter les nouvelles données
+  sampleForumDiscussions.forEach(discussion => store.addForumDiscussion(discussion));
+  sampleSharedResources.forEach(resource => store.addSharedResource(resource));
+  sampleVideoTutorials.forEach(tutorial => store.addVideoTutorial(tutorial));
+  sampleConfigurations.forEach(config => store.setConfiguration(config));
+  sampleForumMembers.forEach(member => store.addForumMember(member));
 
   console.log('✅ Données d\'exemple initialisées avec succès');
   console.log(`📄 ${sampleLegalTexts.length} textes juridiques ajoutés`);
   console.log(`📋 ${sampleProcedures.length} procédures ajoutées`);
   console.log(`📰 ${sampleNews.length} actualités ajoutées`);
   console.log(`📝 ${sampleTemplates.length} modèles ajoutés`);
+  console.log(`💬 ${sampleForumDiscussions.length} discussions de forum ajoutées`);
+  console.log(`📁 ${sampleSharedResources.length} ressources partagées ajoutées`);
+  console.log(`🎥 ${sampleVideoTutorials.length} tutoriels vidéo ajoutés`);
+  console.log(`⚙️ ${sampleConfigurations.length} configurations ajoutées`);
+  console.log(`👥 ${sampleForumMembers.length} membres du forum ajoutés`);
 }
 
 // Fonction pour réinitialiser les données

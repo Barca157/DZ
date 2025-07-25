@@ -136,15 +136,15 @@ export function EnhancedForum() {
           <p className="text-gray-600">Échangez avec des professionnels du droit</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => handleOpenModal('register')}>
+          <Button variant="outline" onClick={() => window.dispatchEvent(new CustomEvent('register-forum'))}>
             <UserPlus className="w-4 h-4 mr-2" />
             S'inscrire
           </Button>
-          <Button variant="outline" onClick={() => handleOpenModal('join')}>
+          <Button variant="outline" onClick={() => window.dispatchEvent(new CustomEvent('join-forum'))}>
             <Users className="w-4 h-4 mr-2" />
             Rejoindre
           </Button>
-          <Button onClick={() => handleOpenModal('discussion')}>
+          <Button onClick={() => window.dispatchEvent(new CustomEvent('create-forum-discussion'))}>
             <Plus className="w-4 h-4 mr-2" />
             Nouvelle Discussion
           </Button>
@@ -228,7 +228,7 @@ export function EnhancedForum() {
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 cursor-pointer">
+                      <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 cursor-pointer" onClick={() => window.dispatchEvent(new CustomEvent('view-forum-discussion', {detail: {discussionId: discussion.id.toString(), title: discussion.title}}))}>
                         {discussion.title}
                       </h3>
                       <Badge variant={discussion.status === 'active' ? 'default' : 'secondary'}>
@@ -280,7 +280,7 @@ export function EnhancedForum() {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 cursor-pointer">
+                        <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 cursor-pointer" onClick={() => window.dispatchEvent(new CustomEvent('view-forum-discussion', {detail: {discussionId: discussion.id.toString(), title: discussion.title}}))}>
                           {discussion.title}
                         </h3>
                         <Badge variant={discussion.status === 'active' ? 'default' : 'secondary'}>
@@ -385,7 +385,7 @@ export function EnhancedForum() {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 cursor-pointer">
+                        <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 cursor-pointer" onClick={() => window.dispatchEvent(new CustomEvent('view-forum-discussion', {detail: {discussionId: discussion.id.toString(), title: discussion.title}}))}>
                           {discussion.title}
                         </h3>
                         <Badge variant="secondary">Résolu</Badge>
