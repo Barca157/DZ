@@ -373,7 +373,7 @@ export function UserGuideSection() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="flex-1"
               />
-              <Button>
+              <Button onClick={() => window.dispatchEvent(new CustomEvent('search-user-guide', { detail: { query: searchTerm } }))}>
                 <Search className="w-4 h-4" />
               </Button>
             </div>

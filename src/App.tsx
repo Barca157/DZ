@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
 import Index from '@/pages/Index';
@@ -9,8 +10,14 @@ import { GlobalNotificationManager } from '@/components/common/GlobalNotificatio
 
 import { AIAutoFillGlobalManager } from '@/components/ai/AIAutoFillGlobalManager';
 import '@/utils/globalButtonHandler'; // Initialiser le gestionnaire global
+import { initializeUniversalButtonHandlers } from '@/utils/universalButtonHandler';
 
 function App() {
+  // Initialiser les handlers universels au démarrage
+  React.useEffect(() => {
+    initializeUniversalButtonHandlers();
+  }, []);
+
   return (
     <EnhancedSecurityProvider>
       <UnifiedModalProvider>

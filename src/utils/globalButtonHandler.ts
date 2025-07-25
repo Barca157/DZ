@@ -72,6 +72,9 @@ export class GlobalButtonHandler {
     // Handlers pour les guides et formulaires
     window.addEventListener('show-guide-viewer', this.handleShowGuideViewer.bind(this));
     window.addEventListener('show-notification', this.handleShowNotification.bind(this));
+    
+    // Handlers pour les guides utilisateur et autres boutons sans onClick
+    window.addEventListener('search-user-guide', this.handleSearchUserGuide.bind(this));
   }
 
   private showModal(title: string, content: string, actions?: Array<{label: string, action: () => void, variant?: string}>) {
@@ -943,6 +946,59 @@ export class GlobalButtonHandler {
       title: type === 'success' ? "Succès" : type === 'error' ? "Erreur" : "Information",
       description: message,
     });
+  }
+
+  private handleSearchUserGuide(event: CustomEvent) {
+    const { query } = event.detail;
+    this.showModal(
+      `Recherche dans le guide utilisateur`,
+      `
+        <div class="space-y-4">
+          <div class="flex space-x-4">
+            <input type="text" value="${query}" class="flex-1 border rounded-md px-3 py-2" placeholder="Rechercher dans le guide...">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Rechercher</button>
+          </div>
+          
+          <div class="space-y-3">
+            <h3 class="font-semibold">Résultats de recherche pour "${query}":</h3>
+            ${Array.from({length: 6}, (_, i) => `
+              <div class="border-l-4 border-blue-400 pl-4 py-2">
+                <h4 class="font-medium">Section ${i + 1}: Guide d'utilisation</h4>
+                <p class="text-sm text-gray-600 mb-2">
+                  Cette section contient des informations pertinentes sur "${query}". 
+                  Découvrez comment utiliser cette fonctionnalité efficacement.
+                </p>
+                <div class="flex space-x-3">
+                  <button class="text-blue-600 hover:text-blue-800 text-sm">Lire la section</button>
+                  <button class="text-green-600 hover:text-green-800 text-sm">Marquer comme utile</button>
+                  <button class="text-orange-600 hover:text-orange-800 text-sm">Partager</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <h4 class="font-semibold mb-2">💡 Conseils de recherche</h4>
+            <ul class="text-sm text-blue-800 space-y-1">
+              <li>• Utilisez des mots-clés spécifiques</li>
+              <li>• Essayez des synonymes si aucun résultat</li>
+              <li>• Consultez l'index alphabétique</li>
+              <li>• Utilisez les filtres par catégorie</li>
+            </ul>
+          </div>
+        </div>
+      `,
+      [
+        { label: 'Nouvelle recherche', action: () => {}, variant: 'primary' },
+        { label: 'Voir l\'index', action: () => {
+          toast({
+            title: "Index du guide",
+            description: "Affichage de l'index alphabétique du guide utilisateur.",
+          });
+        }},
+        { label: 'Fermer', action: () => {} }
+      ]
+    );
   }
 }
 
