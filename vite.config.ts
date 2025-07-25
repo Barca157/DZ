@@ -7,9 +7,9 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
-    port: 5173,
+    port: 8080,
     hmr: {
-      port: 5173,
+      port: 8080,
     },
     // Headers basiques de sécurité (niveau 8.5/10)
     headers: {
