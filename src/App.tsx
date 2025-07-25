@@ -8,6 +8,7 @@ import { EnhancedSecurityProvider } from '@/components/security/EnhancedSecurity
 import { GlobalNotificationManager } from '@/components/common/GlobalNotificationManager';
 
 import { AIAutoFillGlobalManager } from '@/components/ai/AIAutoFillGlobalManager';
+import '@/utils/globalButtonHandler'; // Initialiser le gestionnaire global
 
 function App() {
   return (
