@@ -62,6 +62,16 @@ export class GlobalButtonHandler {
     window.addEventListener('approve-document', this.handleApproveDocument.bind(this));
     window.addEventListener('reject-document', this.handleRejectDocument.bind(this));
     window.addEventListener('request-changes', this.handleRequestChanges.bind(this));
+    
+    // Handlers spécifiques pour les modèles et éditeur collaboratif
+    window.addEventListener('show-templates-modal', this.handleShowTemplatesModal.bind(this));
+    window.addEventListener('show-template-creator', this.handleShowTemplateCreator.bind(this));
+    window.addEventListener('show-collaborative-editor', this.handleShowCollaborativeEditor.bind(this));
+    window.addEventListener('navigate-to-section', this.handleNavigateToSection.bind(this));
+    
+    // Handlers pour les guides et formulaires
+    window.addEventListener('show-guide-viewer', this.handleShowGuideViewer.bind(this));
+    window.addEventListener('show-notification', this.handleShowNotification.bind(this));
   }
 
   private showModal(title: string, content: string, actions?: Array<{label: string, action: () => void, variant?: string}>) {
@@ -606,6 +616,333 @@ export class GlobalButtonHandler {
       `,
       [{ label: 'Fermer', action: () => {} }]
     );
+  }
+
+  // Handlers spécifiques pour les modèles et éditeur collaboratif
+  private handleShowTemplatesModal(event: CustomEvent) {
+    const { category } = event.detail;
+    this.showModal(
+      `Modèles: ${category}`,
+      `
+        <div class="space-y-4">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold">Modèles disponibles pour: ${category}</h3>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Nouveau modèle</button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${Array.from({length: 8}, (_, i) => `
+              <div class="border rounded-lg p-4 hover:bg-gray-50">
+                <div class="flex justify-between items-start mb-2">
+                  <h4 class="font-semibold">Modèle ${category} ${i + 1}</h4>
+                  <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Validé</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">Description du modèle ${i + 1} pour ${category}</p>
+                <div class="flex space-x-2">
+                  <button class="text-blue-600 hover:text-blue-800 text-sm">Prévisualiser</button>
+                  <button class="text-green-600 hover:text-green-800 text-sm">Utiliser</button>
+                  <button class="text-orange-600 hover:text-orange-800 text-sm">Modifier</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="bg-blue-50 p-4 rounded-lg">
+            <h4 class="font-semibold mb-2">Actions rapides</h4>
+            <div class="flex space-x-3">
+              <button class="bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700">Créer nouveau modèle</button>
+              <button class="bg-gray-600 text-white px-3 py-2 rounded text-sm hover:bg-gray-700">Importer modèle</button>
+              <button class="bg-emerald-600 text-white px-3 py-2 rounded text-sm hover:bg-emerald-700">Modèles favoris</button>
+            </div>
+          </div>
+        </div>
+      `,
+      [{ label: 'Fermer', action: () => {} }]
+    );
+  }
+
+  private handleShowTemplateCreator(event: CustomEvent) {
+    this.showModal(
+      'Créateur de modèles',
+      `
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Nom du modèle</label>
+              <input type="text" class="w-full border rounded-md px-3 py-2" placeholder="Nom de votre modèle">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
+              <select class="w-full border rounded-md px-3 py-2">
+                <option>Contrats et accords</option>
+                <option>Documents d'entreprise</option>
+                <option>Procédures judiciaires</option>
+                <option>Actes notariés</option>
+                <option>Documents administratifs</option>
+                <option>Correspondances</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea class="w-full border rounded-md px-3 py-2 h-20" placeholder="Description du modèle..."></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Contenu du modèle</label>
+            <div class="border rounded-md p-4 bg-gray-50 min-h-[200px]">
+              <div class="text-sm text-gray-500 mb-2">Éditeur de texte riche (simulation)</div>
+              <textarea class="w-full border-none bg-transparent resize-none h-40" placeholder="Rédigez votre modèle ici..."></textarea>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Variables dynamiques</label>
+              <div class="space-y-2">
+                <div class="flex items-center space-x-2">
+                  <input type="text" class="flex-1 border rounded px-2 py-1 text-sm" placeholder="Nom variable">
+                  <button class="bg-blue-600 text-white px-2 py-1 rounded text-sm">Ajouter</button>
+                </div>
+                <div class="text-xs text-gray-500">Variables: {{nom}}, {{date}}, {{adresse}}</div>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Options</label>
+              <div class="space-y-2">
+                <label class="flex items-center">
+                  <input type="checkbox" class="mr-2"> Modèle public
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="mr-2"> Validation requise
+                </label>
+                <label class="flex items-center">
+                  <input type="checkbox" class="mr-2"> Modèle collaboratif
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+      [
+        { label: 'Sauvegarder', action: () => {
+          toast({
+            title: "Modèle créé",
+            description: "Votre nouveau modèle a été créé avec succès.",
+          });
+        }, variant: 'primary' },
+        { label: 'Prévisualiser', action: () => {} },
+        { label: 'Annuler', action: () => {} }
+      ]
+    );
+  }
+
+  private handleShowCollaborativeEditor(event: CustomEvent) {
+    this.showModal(
+      'Éditeur collaboratif',
+      `
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <h3 class="text-lg font-semibold">Document collaboratif</h3>
+            <div class="flex items-center space-x-2">
+              <div class="flex -space-x-2">
+                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs">JD</div>
+                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">AM</div>
+                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs">KL</div>
+              </div>
+              <span class="text-sm text-gray-600">3 collaborateurs</span>
+            </div>
+          </div>
+          
+          <div class="border rounded-lg p-4 bg-white min-h-[300px]">
+            <div class="flex justify-between items-center mb-4">
+              <div class="flex space-x-2">
+                <button class="px-3 py-1 bg-gray-200 rounded text-sm hover:bg-gray-300">Gras</button>
+                <button class="px-3 py-1 bg-gray-200 rounded text-sm hover:bg-gray-300">Italique</button>
+                <button class="px-3 py-1 bg-gray-200 rounded text-sm hover:bg-gray-300">Souligné</button>
+                <button class="px-3 py-1 bg-gray-200 rounded text-sm hover:bg-gray-300">Liste</button>
+              </div>
+              <div class="flex space-x-2">
+                <button class="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">Sauvegarder</button>
+                <button class="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700">Publier</button>
+              </div>
+            </div>
+            
+            <div class="border-l-4 border-blue-400 pl-4 mb-4">
+              <h4 class="font-semibold">CONTRAT DE PRESTATION DE SERVICES</h4>
+              <p class="text-sm text-gray-600 mt-2">
+                Entre les soussignés : <span class="bg-yellow-200">{{nom_client}}</span>, 
+                ci-après dénommé "le Client", et <span class="bg-yellow-200">{{nom_prestataire}}</span>, 
+                ci-après dénommé "le Prestataire".
+              </p>
+            </div>
+            
+            <div class="bg-green-50 p-3 rounded mb-4">
+              <div class="flex items-center space-x-2 mb-2">
+                <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-white text-xs">AM</div>
+                <span class="text-sm font-medium">Alice Martin</span>
+                <span class="text-xs text-gray-500">il y a 2 min</span>
+              </div>
+              <p class="text-sm">Ajout de la clause de confidentialité au paragraphe 3</p>
+            </div>
+            
+            <div class="space-y-2">
+              <div class="flex items-center space-x-2">
+                <span class="text-sm font-medium">Commentaires en temps réel:</span>
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                <span class="text-xs text-gray-500">Actif</span>
+              </div>
+              <div class="bg-blue-50 p-2 rounded text-sm">
+                <strong>Jean Dupont:</strong> Vérifier les montants dans l'article 4
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-3 gap-4">
+            <div class="bg-gray-50 p-3 rounded">
+              <h5 class="font-semibold text-sm mb-2">Historique</h5>
+              <div class="space-y-1 text-xs">
+                <div>v1.3 - Alice M. (10:30)</div>
+                <div>v1.2 - Jean D. (09:45)</div>
+                <div>v1.1 - Karim L. (09:20)</div>
+              </div>
+            </div>
+            <div class="bg-gray-50 p-3 rounded">
+              <h5 class="font-semibold text-sm mb-2">Actions</h5>
+              <div class="space-y-1">
+                <button class="w-full text-left text-xs text-blue-600 hover:text-blue-800">Exporter PDF</button>
+                <button class="w-full text-left text-xs text-blue-600 hover:text-blue-800">Partager</button>
+                <button class="w-full text-left text-xs text-blue-600 hover:text-blue-800">Dupliquer</button>
+              </div>
+            </div>
+            <div class="bg-gray-50 p-3 rounded">
+              <h5 class="font-semibold text-sm mb-2">Statut</h5>
+              <div class="space-y-1 text-xs">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                  <span>En cours</span>
+                </div>
+                <div>Dernière modif: 10:35</div>
+                <div>Auto-sauvegarde: ON</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+      [
+        { label: 'Continuer l\'édition', action: () => {}, variant: 'primary' },
+        { label: 'Fermer', action: () => {} }
+      ]
+    );
+  }
+
+  private handleNavigateToSection(event: CustomEvent) {
+    const section = event.detail;
+    toast({
+      title: "Navigation",
+      description: `Redirection vers la section: ${section}`,
+    });
+    
+    // Simuler la navigation
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('section-change', { 
+        detail: { section: section }
+      }));
+    }, 500);
+  }
+
+  private handleShowGuideViewer(event: CustomEvent) {
+    const { title } = event.detail;
+    this.showModal(
+      `Guide: ${title}`,
+      `
+        <div class="space-y-4">
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+            <h3 class="font-semibold text-blue-900 mb-2">📖 ${title}</h3>
+            <p class="text-blue-800 text-sm">Guide pratique complet pour vous accompagner dans vos démarches</p>
+          </div>
+          
+          <div class="space-y-4">
+            <div class="border-l-4 border-gray-300 pl-4">
+              <h4 class="font-semibold mb-2">Table des matières</h4>
+              <ul class="space-y-2 text-sm">
+                <li class="flex items-center space-x-2">
+                  <span class="w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-xs">1</span>
+                  <span>Introduction et prérequis</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <span class="w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-xs">2</span>
+                  <span>Documents nécessaires</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <span class="w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-xs">3</span>
+                  <span>Procédure étape par étape</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <span class="w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-xs">4</span>
+                  <span>Conseils et bonnes pratiques</span>
+                </li>
+                <li class="flex items-center space-x-2">
+                  <span class="w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-xs">5</span>
+                  <span>FAQ et résolution de problèmes</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <h4 class="font-semibold mb-3">📋 Étape 1: Introduction et prérequis</h4>
+              <p class="text-sm text-gray-700 mb-3">
+                Ce guide vous accompagne dans la réalisation de "${title}". 
+                Avant de commencer, assurez-vous d'avoir tous les documents requis.
+              </p>
+              
+              <div class="bg-yellow-50 p-3 rounded border-l-4 border-yellow-400 mb-3">
+                <h5 class="font-semibold text-yellow-800 mb-1">⚠️ Important</h5>
+                <p class="text-yellow-700 text-sm">
+                  Vérifiez que vous disposez de tous les documents mentionnés dans la section 2 
+                  avant de commencer la procédure.
+                </p>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-3">
+                <div class="bg-green-50 p-3 rounded">
+                  <h6 class="font-semibold text-green-800 text-sm mb-1">✅ Durée estimée</h6>
+                  <p class="text-green-700 text-sm">15-30 minutes</p>
+                </div>
+                <div class="bg-blue-50 p-3 rounded">
+                  <h6 class="font-semibold text-blue-800 text-sm mb-1">🏛️ Organisme</h6>
+                  <p class="text-blue-700 text-sm">Administration publique</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex justify-between items-center bg-gray-100 p-3 rounded">
+              <div class="flex items-center space-x-3">
+                <button class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Chapitre suivant</button>
+                <button class="bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700">Marque-pages</button>
+              </div>
+              <div class="text-sm text-gray-600">
+                Page 1 sur 12
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+      [
+        { label: 'Télécharger PDF', action: () => this.simulateDownload(title, 'PDF'), variant: 'primary' },
+        { label: 'Imprimer', action: () => {
+          toast({
+            title: "Impression",
+            description: `Impression du guide "${title}" en cours...`,
+          });
+        }},
+        { label: 'Fermer', action: () => {} }
+      ]
+    );
+  }
+
+  private handleShowNotification(event: CustomEvent) {
+    const { type, message } = event.detail;
+    toast({
+      title: type === 'success' ? "Succès" : type === 'error' ? "Erreur" : "Information",
+      description: message,
+    });
   }
 }
 
