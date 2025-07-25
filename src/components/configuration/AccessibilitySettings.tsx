@@ -44,12 +44,21 @@ export function AccessibilitySettings({ language = "fr" }: AccessibilitySettings
   };
 
   const handleSave = () => {
-    console.log('Paramètres d\'accessibilité sauvegardés:', settings);
-    // Ici on sauvegarderait les paramètres
+    // Sauvegarder chaque paramètre individuellement
+    Object.entries(settings).forEach(([key, value]) => {
+      window.dispatchEvent(new CustomEvent('save-configuration', {
+        detail: {
+          key: `accessibility-${key}`,
+          value: value,
+          category: 'accessibility',
+          userId: 'current-user'
+        }
+      }));
+    });
   };
 
   const handleReset = () => {
-    setSettings({
+    const defaultSettings = {
       highContrast: false,
       largeText: false,
       screenReader: false,
@@ -59,7 +68,14 @@ export function AccessibilitySettings({ language = "fr" }: AccessibilitySettings
       fontSize: [16],
       voiceRate: [1],
       theme: 'default'
-    });
+    };
+    
+    setSettings(defaultSettings);
+    
+    // Réinitialiser les configurations dans le store
+    window.dispatchEvent(new CustomEvent('reset-configuration', {
+      detail: { category: 'accessibility' }
+    }));
   };
 
   return (

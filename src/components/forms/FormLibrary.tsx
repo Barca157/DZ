@@ -188,7 +188,7 @@ export function FormLibrary({ onSelectTemplate, onAddToLegalTexts, onAddToProced
                   <Button 
                     size="sm" 
                     className="flex-1"
-                    onClick={() => handleUseTemplate(template)}
+                    onClick={() => window.dispatchEvent(new CustomEvent('edit-content', {detail: {contentId: template.id, type: 'template'}}))}
                   >
                     <Edit className="w-3 h-3 mr-1" />
                     Modifier

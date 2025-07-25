@@ -326,9 +326,8 @@ export function SecureFileSharing() {
                           variant="outline" 
                           size="sm"
                           onClick={() => {
-                            console.log('Sharing resource:', resource.title);
                             window.dispatchEvent(new CustomEvent('share-resource', { 
-                              detail: { resourceId: resource.id }
+                              detail: { resourceId: resource.id.toString(), title: resource.title }
                             }));
                           }}
                         >

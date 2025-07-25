@@ -212,10 +212,10 @@ export function WorkflowSection() {
                   <Button 
                     size="sm" 
                     variant="ghost"
-                    onClick={buttonHandlers.generic(`Configurer: ${workflow.name}`, 'Configuration du workflow', 'Workflow')}
-                  >
-                    <Settings className="w-4 h-4" />
-                  </Button>
+                                          onClick={() => window.dispatchEvent(new CustomEvent('configure-item', {detail: {itemId: workflow.id, itemType: 'workflow'}}))}
+                    >
+                      <Settings className="w-4 h-4" />
+                    </Button>
                 </div>
               </div>
             </CardContent>

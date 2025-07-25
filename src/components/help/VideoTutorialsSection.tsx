@@ -216,7 +216,10 @@ export function VideoTutorialsSection() {
                   key={category.id}
                   variant={selectedCategory === category.id ? "default" : "outline"}
                   size="sm"
-                  onClick={() => setSelectedCategory(category.id)}
+                  onClick={() => {
+                    setSelectedCategory(category.id);
+                    window.dispatchEvent(new CustomEvent('filter-content', {detail: {filterType: 'category', filterValue: category.label, contentType: 'video-tutorials'}}));
+                  }}
                 >
                   {category.label} ({category.count})
                 </Button>
@@ -310,9 +313,8 @@ export function VideoTutorialsSection() {
               <Button 
                 className="w-full mt-3"
                 onClick={() => {
-                  console.log('Watching video:', video.title);
-                  window.dispatchEvent(new CustomEvent('play-video', { 
-                    detail: { videoId: video.id }
+                  window.dispatchEvent(new CustomEvent('play-video-tutorial', { 
+                    detail: { tutorialId: video.id, title: video.title }
                   }));
                 }}
               >
@@ -334,8 +336,7 @@ export function VideoTutorialsSection() {
             <Button 
               variant="outline"
               onClick={() => {
-                console.log('Downloading all videos');
-                window.dispatchEvent(new CustomEvent('download-all-videos'));
+                window.dispatchEvent(new CustomEvent('download-resource', {detail: {resourceName: 'Tous les tutoriels vidéo', resourceType: 'video-collection'}}));
               }}
             >
               <Download className="w-4 h-4 mr-2" />
@@ -344,8 +345,7 @@ export function VideoTutorialsSection() {
             <Button 
               variant="outline"
               onClick={() => {
-                console.log('Opening playback preferences');
-                window.dispatchEvent(new CustomEvent('show-playback-preferences'));
+                window.dispatchEvent(new CustomEvent('open-settings', {detail: {category: 'video-playback'}}));
               }}
             >
               <Settings className="w-4 h-4 mr-2" />
@@ -354,8 +354,7 @@ export function VideoTutorialsSection() {
             <Button 
               variant="outline"
               onClick={() => {
-                console.log('Creating custom playlist');
-                window.dispatchEvent(new CustomEvent('show-playlist-creator'));
+                window.dispatchEvent(new CustomEvent('add-video-tutorial', {detail: {data: {type: 'playlist'}}}));
               }}
             >
               <Zap className="w-4 h-4 mr-2" />

@@ -253,10 +253,13 @@ export function DataExtractionSection() {
                     size="sm" 
                     className="gap-2"
                     onClick={() => {
-                      console.log('Sharing extracted data');
-                      // Simulate share functionality
-                      window.dispatchEvent(new CustomEvent('show-share-modal', { 
-                        detail: { content: 'extracted_data' }
+                      // Partager les résultats d'extraction
+                      window.dispatchEvent(new CustomEvent('share-content', {
+                        detail: { 
+                          contentId: extraction.id.toString(),
+                          title: `Résultats ${extraction.fileName}`,
+                          type: 'extraction'
+                        }
                       }));
                     }}
                   >
