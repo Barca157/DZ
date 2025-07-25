@@ -5,7 +5,9 @@ export function addUniversalButtonHandlers() {
   // Attendre que le DOM soit chargé
   setTimeout(() => {
     const buttons = document.querySelectorAll('button:not([onclick]):not([data-handler-added])');
+    const links = document.querySelectorAll('a[href="#"]:not([data-handler-added]), a:not([href]):not([data-handler-added])');
     
+    // Traiter les boutons
     buttons.forEach((button, index) => {
       const buttonElement = button as HTMLButtonElement;
       
@@ -153,7 +155,68 @@ export function addUniversalButtonHandlers() {
       buttonElement.addEventListener('click', handler);
     });
     
-    console.log(`🎯 ${buttons.length} boutons ont été enrichis avec des handlers universels`);
+    // Traiter les liens
+    links.forEach((link, index) => {
+      const linkElement = link as HTMLAnchorElement;
+      
+      // Marquer le lien comme traité
+      linkElement.setAttribute('data-handler-added', 'true');
+      
+      // Déterminer le type d'action basé sur le contenu du lien
+      const linkText = linkElement.textContent?.trim() || '';
+      const linkClass = linkElement.className || '';
+      const parentSection = getParentSection(linkElement);
+      
+      // Créer un handler approprié basé sur le contexte
+      let handler: (e: Event) => void;
+      
+      if (linkText.toLowerCase().includes('voir') || linkText.toLowerCase().includes('détails')) {
+        handler = (e: Event) => {
+          e.preventDefault();
+          const documentName = linkText || `Document-${index}`;
+          window.dispatchEvent(new CustomEvent('view-legal-text', { 
+            detail: { textId: `link-${index}`, title: documentName, type: 'document' }
+          }));
+        };
+      } else if (linkText.toLowerCase().includes('télécharger') || linkText.toLowerCase().includes('download')) {
+        handler = (e: Event) => {
+          e.preventDefault();
+          const resourceName = linkText || `Ressource-${index}`;
+          window.dispatchEvent(new CustomEvent('download-resource', { 
+            detail: { resourceName, resourceType: 'document' }
+          }));
+        };
+      } else if (linkText.toLowerCase().includes('lire') || linkText.toLowerCase().includes('consulter')) {
+        handler = (e: Event) => {
+          e.preventDefault();
+          const newsTitle = linkText || `Article-${index}`;
+          window.dispatchEvent(new CustomEvent('read-news', { 
+            detail: { newsTitle }
+          }));
+        };
+      } else {
+        // Handler générique pour tous les autres liens
+        handler = (e: Event) => {
+          e.preventDefault();
+          const actionType = linkText || 'Lien générique';
+          const context = parentSection || 'Application';
+          window.dispatchEvent(new CustomEvent('generic-button-click', { 
+            detail: { 
+              buttonText: actionType, 
+              action: 'Clic sur lien', 
+              context: context,
+              element: linkElement.tagName,
+              classes: linkClass
+            }
+          }));
+        };
+      }
+      
+      // Ajouter l'event listener
+      linkElement.addEventListener('click', handler);
+    });
+
+    console.log(`🎯 ${buttons.length} boutons et ${links.length} liens ont été enrichis avec des handlers universels`);
   }, 1000);
 }
 
@@ -212,7 +275,8 @@ export function observeNewButtons() {
           if (node.nodeType === Node.ELEMENT_NODE) {
             const element = node as Element;
             const newButtons = element.querySelectorAll('button:not([onclick]):not([data-handler-added])');
-            if (newButtons.length > 0) {
+            const newLinks = element.querySelectorAll('a[href="#"]:not([data-handler-added]), a:not([href]):not([data-handler-added])');
+            if (newButtons.length > 0 || newLinks.length > 0) {
               hasNewButtons = true;
             }
           }
